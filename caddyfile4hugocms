@@ -1,1 +1,59 @@
 
+hearingaid.shopym.com {
+    # Configure HTTPS certificate
+    tls your-email@example.com
+    
+    # Serve static files for hearingaid.shopym.com
+    root * /root/hugo-site/hearingaid.shopym.com/public
+    file_server
+    
+    # Enable compression
+    encode gzip zstd
+    
+    # Error handling
+    handle_errors {
+        @404 expression {http.error.status_code} == 404
+        respond @404 "Page Not Found (404 Error)" 404
+        respond "Server Error: {http.error.status_code}" {http.error.status_code}
+    }
+    
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+    }
+}
+
+www.medicalequipment.com.cn medicalequipment.com.cn {
+    # Configure HTTPS certificate
+    tls your-email@example.com
+    
+    # Serve static files for both medicalequipment domains
+    root * /root/hugo-site/medicalequipment.com.cn/public
+    file_server
+    
+    # Enable compression
+    encode gzip zstd
+    
+    # Error handling
+    handle_errors {
+        @404 expression {http.error.status_code} == 404
+        respond @404 "Page Not Found (404 Error)" 404
+        respond "Server Error: {http.error.status_code}" {http.error.status_code}
+    }
+    
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+    }
+}
+
+# HTTP auto-redirect to HTTPS
+:80 {
+    redir https://{host}{uri} permanent
+}
