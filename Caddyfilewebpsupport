@@ -1,0 +1,78 @@
+# Space-separated list of all domains to proxy
+hearingaid.shopym.com medicalequipment.com.cn www.medicalequipment.com.cn {
+    # Configure HTTPS certificate (fill in your email for certificate notifications)
+    tls your-email@example.com  # Replace with your actual email
+
+    # Reverse proxy to backend service
+    reverse_proxy http://172.18.0.1:8080
+
+    # Enable compression to improve performance
+    encode gzip zstd
+
+    # WebP image processing and caching
+    @webpAccept {
+        header Accept *webp*
+        path *.jpg *.jpeg *.png
+    }
+    @webpExists {
+        path_regexp ^(.+)\.(jpg|jpeg|png)$
+        file {re.1}.webp
+    }
+    
+    # Serve existing WebP files if available and client supports WebP
+    rewrite @webpAccept @webpExists {re.1}.webp
+    
+    # Generate WebP on the fly and cache it
+    route @webpAccept {
+        rewrite {path}.webp
+        reverse_proxy http://172.18.0.1:8080 {
+            # Store generated WebP files for future requests
+            cache {
+                path ./var/cache/caddy/webp
+                ttl 720h  # Cache for 30 days
+                stale 24h
+            }
+        }
+        header Content-Type image/webp
+        header Vary Accept
+    }
+
+    # Set cache headers for images
+    @images {
+        path *.jpg *.jpeg *.png *.webp *.gif *.svg
+    }
+    header @images Cache-Control "public, max-age=2592000, immutable"  # 30 days cache
+    header @images ETag "{filemtime}"
+    
+    # Error handling configuration
+    handle_errors {
+        # Custom response for 404 errors
+        @404 {
+            expression int({http.error.status_code}) == 404
+        }
+        respond @404 "Page Not Found (404 Error)"
+
+        # Default response for other errors
+        respond "Server Error: {http.error.status_code}"
+    }
+
+    # WebSocket support (if backend service requires WebSocket)
+    @ws {
+        header Connection Upgrade
+        header Upgrade websocket
+    }
+    reverse_proxy @ws http://172.18.0.1:8080  # Proxy WebSocket requests to backend
+
+    # Security headers configuration
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+    }
+}
+
+# HTTP auto-redirect to HTTPS
+:80 {
+    redir https://{host}{uri} permanent
+}
