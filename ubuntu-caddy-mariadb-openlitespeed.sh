@@ -47,7 +47,7 @@ sudo docker run -d \
   -p 8080:80 \
   -p 8443:443 \
   -v /home/www:/home/www \
-  -v /home/openlitespeed/conf:/usr/local/lsws/conf \
+  -v /usr/local/lsws/conf:/usr/local/lsws/conf \
   --restart always \
   litespeedtech/openlitespeed:latest
 
