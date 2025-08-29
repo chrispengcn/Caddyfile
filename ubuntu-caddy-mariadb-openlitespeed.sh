@@ -39,6 +39,7 @@ sudo mkdir -p /home/openlitespeed/conf
 sudo chmod -R 755 /home/www
 sudo chmod -R 755 /home/openlitespeed
 
+
 # 使用Docker运行OpenLiteSpeed
 echo "启动 OpenLiteSpeed Docker 容器..."
 sudo docker run -d \
@@ -50,6 +51,17 @@ sudo docker run -d \
   -v /usr/local/lsws/conf:/usr/local/lsws/conf \
   --restart always \
   litespeedtech/openlitespeed:latest
+
+# 下载并解压 phpMyAdmin 到指定目录
+echo "安装 phpMyAdmin..."
+PHPMYADMIN_VERSION="5.2.1"  # 使用稳定版本
+cd /home/www/demo.site/html
+sudo wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
+sudo tar -zxvf phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
+sudo mv phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages phpmyadmin
+sudo rm phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
+sudo chown -R nobody:nogroup /home/www/demo.site/html/phpmyadmin
+  
 
 # 输出安装状态
 echo "Caddy, MariaDB 和 OpenLiteSpeed Docker 容器已安装完成！"
