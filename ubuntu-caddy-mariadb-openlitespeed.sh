@@ -46,6 +46,7 @@ sudo docker run -d \
   --network host \
   -p 8080:80 \
   -p 8443:443 \
+  -p 7080:7080 \
   -v /home/www:/home/www \
   -v /usr/local/lsws/conf:/usr/local/lsws/conf \
   --restart always \
@@ -83,3 +84,5 @@ echo "Caddy, MariaDB, and OpenLiteSpeed Docker containers have been installed!"
 echo "Caddy default access address: http://localhost:2015"
 echo "OpenLiteSpeed access address: http://localhost:8080"
 echo "OpenLiteSpeed HTTPS access address: https://localhost:8443"
+echo "OpenLiteSpeed Admin Panel access address: https://localhost:7080"
+echo "Varnish default address: https://localhost:6081"
