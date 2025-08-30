@@ -62,6 +62,34 @@ sudo mv phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages phpmyadmin
 sudo rm phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
 sudo chown -R nobody:nogroup /home/www/demo.site/html/phpmyadmin
 
+# WordPress installation prompt
+read -p "Do you want to install the latest version of WordPress to /home/www/wordpress.demo.site/html/? (Y/N): " wp_install
+if [[ "$wp_install" == "Y" || "$wp_install" == "y" ]]; then
+  echo "Downloading and installing the latest version of WordPress..."
+  
+  # Create the necessary directory for WordPress
+  sudo mkdir -p /home/www/wordpress.demo.site
+
+  # Download the latest WordPress
+  cd /home/www/wordpress.demo.site
+  sudo wget https://wordpress.org/latest.tar.gz
+
+  # Uncompress the WordPress package
+  sudo tar -zxvf latest.tar.gz
+
+  # Clean up the tar file
+  sudo rm latest.tar.gz
+
+  sudo mv /home/www/wordpress.demo.site/wordpress /home/www/wordpress.demo.site/html
+
+  # Set permissions
+  sudo chown -R nobody:nogroup /home/www/wordpress.demo.site/html
+
+  echo "WordPress installation complete, access it at: http://localhost/wordpress"
+else
+  echo "Skipping WordPress installation."
+fi
+
 # Varnish installation prompt
 read -p "Do you want to install Varnish cache? (Y/N): " varnish_install
 if [[ "$varnish_install" == "Y" || "$varnish_install" == "y" ]]; then
