@@ -60,7 +60,7 @@ sudo wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdm
 sudo tar -zxvf phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
 sudo mv phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages phpmyadmin
 sudo rm phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
-sudo chown -R nobody:nogroup /home/www/demo.site/html/phpmyadmin
+sudo chown -R nobody:nogroup /home/www/phpmyadmin.demo.site/html/phpmyadmin
 
 # WordPress installation prompt
 read -p "Do you want to install the latest version of WordPress to /home/www/wordpress.demo.site/html/? (Y/N): " wp_install
